@@ -59,6 +59,9 @@ public class MicroServer implements MicroTraderServer {
 
 	}
 
+	private void dataToXML(Order order) {
+		
+	}
 	
 	public static final Logger LOGGER = Logger.getLogger(MicroServer.class.getName());
 
@@ -285,6 +288,7 @@ public class MicroServer implements MicroTraderServer {
 		// save order on map
 		Set<Order> orders = orderMap.get(o.getNickname());
 		orders.add(o);
+		dataToXML(o);
 		
 	}
 
