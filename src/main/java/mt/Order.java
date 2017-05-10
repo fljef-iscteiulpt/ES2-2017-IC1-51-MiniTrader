@@ -53,8 +53,15 @@ public class Order implements Serializable {
 	 * @return a new buy order.
 	 */
 	public static Order createBuyOrder(String nickname, String stock, int numberOfUnits, double pricePerUnit) {
+		if(numberOfUnits>=10){
 		return new Order(nickname, true, stock, numberOfUnits, pricePerUnit);
-	}
+		}
+		else{
+			System.out.println("number of units has to be >=10");
+			return null;
+			
+		}
+		}
 	
 
 	/**
@@ -68,7 +75,16 @@ public class Order implements Serializable {
 	 * @return a new sell order.
 	 */
 	public static Order createSellOrder(String nickname, String stock, int numberOfUnits, double pricePerUnit) {
+		if(numberOfUnits>=10){
 		return new Order(nickname, false, stock, numberOfUnits, pricePerUnit);
+		}
+		else{
+			System.out.println("number of units has to be >=10");
+			return null;
+
+		}
+	
+	
 	}
 	
 	
