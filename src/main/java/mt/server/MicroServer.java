@@ -96,7 +96,8 @@ public class MicroServer implements MicroTraderServer {
 	/**
 	 * Exports order to an XML document.
 	 *
-	 * @param order the order
+	 * @param order
+	 *            the order
 	 */
 	private void dataToXML(Order order) {
 		try {
@@ -168,13 +169,27 @@ public class MicroServer implements MicroTraderServer {
 				break;
 			case NEW_ORDER:
 				try {
+
 					order = msg.getOrder();
-					verifyUserConnected(msg);
-					if (msg.getOrder().getServerOrderID() == EMPTY) {
-						msg.getOrder().setServerOrderID(id++);
+					Set<Order> orders = orderMap.get(order.getNickname());
+					int contador = 1;
+					for (Order o : orders) {
+						if (o.isSellOrder()) {
+							contador++;
+						}
 					}
-					notifyAllClients(msg.getOrder());
-					processNewOrder(msg);
+
+					if (contador > 5 && order.isSellOrder()) {
+						System.out.println("Sellers cannot have more than five sell orders unfulfilled at any time");
+					} else {
+						verifyUserConnected(msg);
+						if (msg.getOrder().getServerOrderID() == EMPTY) {
+							msg.getOrder().setServerOrderID(id++);
+						}
+						notifyAllClients(msg.getOrder());
+						processNewOrder(msg);
+					}
+
 				} catch (ServerException e) {
 					serverComm.sendError(msg.getSenderNickname(), e.getMessage());
 				}
