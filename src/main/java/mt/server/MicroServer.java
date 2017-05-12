@@ -59,7 +59,6 @@ public class MicroServer implements MicroTraderServer {
 
 	}
 
-	
 	public static final Logger LOGGER = Logger.getLogger(MicroServer.class.getName());
 
 	/**
@@ -124,13 +123,27 @@ public class MicroServer implements MicroTraderServer {
 				break;
 			case NEW_ORDER:
 				try {
+
 					order = msg.getOrder();
-					verifyUserConnected(msg);
-					if (msg.getOrder().getServerOrderID() == EMPTY) {
-						msg.getOrder().setServerOrderID(id++);
+					Set<Order> orders = orderMap.get(order.getNickname());
+					int contador = 1;
+					for (Order o : orders) {
+						if (o.isSellOrder()) {
+							contador++;
+						}
 					}
-					notifyAllClients(msg.getOrder());
-					processNewOrder(msg);
+
+					if (contador > 5 && order.isSellOrder()) {
+						System.out.println("Sellers cannot have more than five sell orders unfulfilled at any time");
+					} else {
+						verifyUserConnected(msg);
+						if (msg.getOrder().getServerOrderID() == EMPTY) {
+							msg.getOrder().setServerOrderID(id++);
+						}
+						notifyAllClients(msg.getOrder());
+						processNewOrder(msg);
+					}
+
 				} catch (ServerException e) {
 					serverComm.sendError(msg.getSenderNickname(), e.getMessage());
 				}
@@ -248,7 +261,7 @@ public class MicroServer implements MicroTraderServer {
 		LOGGER.log(Level.INFO, "Processing new order...");
 		System.out.println("Entrou em ProcessNewOrder");
 		Order o = msg.getOrder();
-		
+
 		// save the order on map
 		saveOrder(o);
 
@@ -285,7 +298,7 @@ public class MicroServer implements MicroTraderServer {
 		// save order on map
 		Set<Order> orders = orderMap.get(o.getNickname());
 		orders.add(o);
-		
+
 	}
 
 	/**
@@ -340,19 +353,19 @@ public class MicroServer implements MicroTraderServer {
 	 */
 	private void doTransaction(Order buyOrder, Order sellerOrder) {
 		LOGGER.log(Level.INFO, "Processing transaction between seller and buyer...");
-		if(!buyOrder.getNickname().equals(sellerOrder.getNickname())){
-		if (buyOrder.getNumberOfUnits() >= sellerOrder.getNumberOfUnits()) {
-			buyOrder.setNumberOfUnits(buyOrder.getNumberOfUnits() - sellerOrder.getNumberOfUnits());
-			sellerOrder.setNumberOfUnits(EMPTY);
-		} else {
-			sellerOrder.setNumberOfUnits(sellerOrder.getNumberOfUnits() - buyOrder.getNumberOfUnits());
-			buyOrder.setNumberOfUnits(EMPTY);
-		}
+		if (!buyOrder.getNickname().equals(sellerOrder.getNickname())) {
+			if (buyOrder.getNumberOfUnits() >= sellerOrder.getNumberOfUnits()) {
+				buyOrder.setNumberOfUnits(buyOrder.getNumberOfUnits() - sellerOrder.getNumberOfUnits());
+				sellerOrder.setNumberOfUnits(EMPTY);
+			} else {
+				sellerOrder.setNumberOfUnits(sellerOrder.getNumberOfUnits() - buyOrder.getNumberOfUnits());
+				buyOrder.setNumberOfUnits(EMPTY);
+			}
 
-		updatedOrders.add(buyOrder);
-		updatedOrders.add(sellerOrder);
-	}
-		else System.out.println("You can't buy/sell your own Orders");
+			updatedOrders.add(buyOrder);
+			updatedOrders.add(sellerOrder);
+		} else
+			System.out.println("You can't buy/sell your own Orders");
 	}
 
 	/**
