@@ -59,7 +59,6 @@ public class MicroServer implements MicroTraderServer {
 
 	}
 
-	
 	public static final Logger LOGGER = Logger.getLogger(MicroServer.class.getName());
 
 	/**
@@ -92,6 +91,46 @@ public class MicroServer implements MicroTraderServer {
 		LOGGER.log(Level.INFO, "Creating the server...");
 		orderMap = new HashMap<String, Set<Order>>();
 		updatedOrders = new HashSet<>();
+	}
+
+	private void dataToXML(Order order) {
+		try {
+			String path = new String("/Users/faizalatif/git/ES2-2017-IC1-51-MiniTrader/persistence.xml");
+			File inputFile = new File(path);
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(inputFile);
+			doc.getDocumentElement().normalize();
+			Element newElementOrder = doc.createElement("Order");
+
+			newElementOrder.setAttribute("Id", Integer.toString(order.getServerOrderID()));
+			if (order.isBuyOrder()) {
+				System.out.println("fez buy");
+				newElementOrder.setAttribute("Type", "Buy");
+			} else {
+				newElementOrder.setAttribute("Type", "Sell");
+			}
+			newElementOrder.setAttribute("Stock", order.getStock());
+			newElementOrder.setAttribute("Units", Integer.toString(order.getNumberOfUnits()));
+			newElementOrder.setAttribute("Price", Double.toString(order.getPricePerUnit()));
+			// Add new node to XML document root element
+			System.out.println("----- Adding new element to root element -----");
+			System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+			Node n = doc.getDocumentElement();
+			n.appendChild(newElementOrder);
+			// Save XML document
+			System.out.println("Save XML document.");
+			Transformer transformer = TransformerFactory.newInstance().newTransformer();
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			StreamResult result = new StreamResult(new FileOutputStream("persistence.xml"));
+			DOMSource source = new DOMSource(doc);
+			transformer.transform(source, result);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+		}
+
 	}
 
 	@Override
@@ -248,7 +287,7 @@ public class MicroServer implements MicroTraderServer {
 		LOGGER.log(Level.INFO, "Processing new order...");
 		System.out.println("Entrou em ProcessNewOrder");
 		Order o = msg.getOrder();
-		
+
 		// save the order on map
 		saveOrder(o);
 
@@ -285,7 +324,8 @@ public class MicroServer implements MicroTraderServer {
 		// save order on map
 		Set<Order> orders = orderMap.get(o.getNickname());
 		orders.add(o);
-		
+		dataToXML(o);
+
 	}
 
 	/**
