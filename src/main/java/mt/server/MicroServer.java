@@ -340,7 +340,7 @@ public class MicroServer implements MicroTraderServer {
 	 */
 	private void doTransaction(Order buyOrder, Order sellerOrder) {
 		LOGGER.log(Level.INFO, "Processing transaction between seller and buyer...");
-
+		if(!buyOrder.getNickname().equals(sellerOrder.getNickname())){
 		if (buyOrder.getNumberOfUnits() >= sellerOrder.getNumberOfUnits()) {
 			buyOrder.setNumberOfUnits(buyOrder.getNumberOfUnits() - sellerOrder.getNumberOfUnits());
 			sellerOrder.setNumberOfUnits(EMPTY);
@@ -351,6 +351,8 @@ public class MicroServer implements MicroTraderServer {
 
 		updatedOrders.add(buyOrder);
 		updatedOrders.add(sellerOrder);
+	}
+		else System.out.println("You can't buy/sell your own Orders");
 	}
 
 	/**
