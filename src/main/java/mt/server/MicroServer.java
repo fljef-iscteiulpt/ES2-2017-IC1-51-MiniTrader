@@ -59,6 +59,11 @@ public class MicroServer implements MicroTraderServer {
 
 	}
 
+	/**
+	 * Exports order to an XML document.
+	 *
+	 * @param order the order
+	 */
 	private void dataToXML(Order order) {
 		try {
 			String path= new String ("/Users/faizalatif/git/ES2-2017-IC1-51-MiniTrader/persistence.xml");
@@ -90,6 +95,7 @@ public class MicroServer implements MicroTraderServer {
 			System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
 			Node n = doc.getDocumentElement();
 			n.appendChild(newElementOrder);
+			
 			// Save XML document
 			System.out.println("Save XML document.");
 			Transformer transformer = TransformerFactory.newInstance().newTransformer();
@@ -100,10 +106,7 @@ public class MicroServer implements MicroTraderServer {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			
 		}
-
-
 	}
 	
 	public static final Logger LOGGER = Logger.getLogger(MicroServer.class.getName());
