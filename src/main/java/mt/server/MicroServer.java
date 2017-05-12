@@ -93,6 +93,11 @@ public class MicroServer implements MicroTraderServer {
 		updatedOrders = new HashSet<>();
 	}
 
+	/**
+	 * Exports order to an XML document.
+	 *
+	 * @param order the order
+	 */
 	private void dataToXML(Order order) {
 		try {
 			String path = new String("/Users/faizalatif/git/ES2-2017-IC1-51-MiniTrader/persistence.xml");
