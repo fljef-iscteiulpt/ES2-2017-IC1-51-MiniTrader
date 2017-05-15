@@ -101,7 +101,7 @@ public class MicroServer implements MicroTraderServer {
 	 */
 	private void dataToXML(Order order) {
 		try {
-			String path = new String("/Users/faizalatif/git/ES2-2017-IC1-51-MiniTrader/persistence.xml");
+			String path = new String(persistence.xml");
 			File inputFile = new File(path);
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
