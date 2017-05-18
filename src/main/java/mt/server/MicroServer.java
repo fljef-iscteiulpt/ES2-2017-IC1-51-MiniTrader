@@ -128,7 +128,7 @@ public class MicroServer implements MicroTraderServer {
 			System.out.println("Save XML document.");
 			Transformer transformer = TransformerFactory.newInstance().newTransformer();
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			StreamResult result = new StreamResult(new FileOutputStream("persistence.xml"));
+			StreamResult result = new StreamResult(new FileOutputStream(path));
 			DOMSource source = new DOMSource(doc);
 			transformer.transform(source, result);
 		} catch (Exception e) {
