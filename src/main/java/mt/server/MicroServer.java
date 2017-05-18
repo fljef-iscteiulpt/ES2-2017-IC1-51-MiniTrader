@@ -66,7 +66,7 @@ public class MicroServer implements MicroTraderServer {
 	 */
 	private void dataToXML(Order order) {
 		try {
-			String path= new String ("persistence.xml");
+			String path= new String ("C:\\Users\\Ana Rita\\Desktop\\jars\\persistence.xml");
 			File inputFile = new File(path);
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
